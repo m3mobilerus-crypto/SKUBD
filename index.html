@@ -1,0 +1,113 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Помощник для королевы</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #fbf7f4; --card: #fff; --ink: #22202a; --dim: #6f6b7a; --line: #ece5e0;
+    --accent: #8a4fbe; --accent-soft: #f3ecfa; --price: #1f7a4d; --shadow: 0 1px 2px rgba(40,20,60,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17151c; --card: #201d27; --ink: #efecf3; --dim: #a49fb0; --line: #2e2a37;
+      --accent: #c39bec; --accent-soft: #2a2136; --price: #6fd39f; --shadow: none;
+    }
+  }
+  body { background: var(--bg); color: var(--ink);
+         font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 34px 20px 80px; }
+  header { text-align: center; margin-bottom: 24px; }
+  .crown { font-size: 26px; display: block; margin-bottom: 4px; }
+  h1 { font-size: 28px; margin: 0 0 4px; letter-spacing: -0.02em; }
+  #date { color: var(--dim); font-size: 13px; }
+
+  .block { background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+           padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); }
+  .bt { font-size: 14px; text-transform: uppercase; letter-spacing: .05em; color: var(--dim); margin-bottom: 14px; }
+
+  .fields { display: grid; grid-template-columns: 1.4fr 1fr 1fr auto; gap: 12px; align-items: end; }
+  @media (max-width: 620px) { .fields { grid-template-columns: 1fr 1fr; } }
+  label { display: block; font-size: 13.5px; color: var(--dim); margin-bottom: 5px; }
+  input[type=text] { width: 100%; box-sizing: border-box; font: inherit; font-size: 17px;
+                     padding: 12px 14px; border: 2px solid var(--line); border-radius: 12px;
+                     background: var(--bg); color: var(--ink); }
+  input[type=text]:focus { outline: none; border-color: var(--accent); }
+  .btn { font: inherit; font-size: 15px; background: var(--card); color: var(--ink);
+         border: 1px solid var(--line); border-radius: 12px; padding: 12px 18px; cursor: pointer; }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  #f-explain { margin-top: 12px; font-size: 13.5px; color: var(--accent); background: var(--accent-soft);
+               padding: 9px 13px; border-radius: 10px; }
+  #f-count { margin: 16px 0 10px; color: var(--dim); font-size: 14px; }
+
+  .drop { border: 2px dashed var(--line); border-radius: 12px; padding: 26px 18px; text-align: center;
+          color: var(--dim); font-size: 14.5px; cursor: pointer; display: block; }
+  .drop:hover, .drop.over { border-color: var(--accent); color: var(--accent); }
+  .drop strong { display: block; font-size: 16px; color: var(--ink); margin-bottom: 4px; }
+  .drop input { display: none; }
+  #file-error { color: #c0392b; font-size: 14px; margin-top: 10px; }
+  #file-summary { margin: 16px 0 10px; font-size: 15px; }
+
+  .item, .row { display: flex; gap: 16px; align-items: flex-start; justify-content: space-between;
+                border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 8px;
+                background: var(--card); }
+  .row.miss { opacity: .65; }
+  .title { font-weight: 500; margin-bottom: 6px; }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag { font-size: 12.5px; background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 3px 10px; }
+  .tag.soft { background: transparent; color: var(--dim); border: 1px solid var(--line); }
+  .right { text-align: right; flex-shrink: 0; }
+  .price { font-size: 20px; font-weight: 600; color: var(--price); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .price .per { font-size: 13px; font-weight: 400; color: var(--dim); }
+  .second { font-size: 12.5px; color: var(--dim); margin-top: 2px; white-space: nowrap; }
+  .open { display: inline-block; margin-top: 7px; font-size: 13px; color: var(--accent); text-decoration: none;
+          border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; }
+  .none { color: var(--dim); font-size: 14.5px; padding: 8px 2px; }
+  @media (max-width: 560px) { .item, .row { flex-direction: column; gap: 10px; } .right { text-align: left; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="crown">👑</span>
+    <h1>Помощник для королевы</h1>
+    <div id="date"></div>
+  </header>
+
+  <div class="block">
+    <div class="bt">Подобрать по размеру</div>
+    <div class="fields">
+      <div>
+        <label for="f-din">DIN, ГОСТ или ISO</label>
+        <input type="text" id="f-din" placeholder="933" autocomplete="off">
+      </div>
+      <div>
+        <label for="f-d">Диаметр</label>
+        <input type="text" id="f-d" placeholder="16" inputmode="decimal" autocomplete="off">
+      </div>
+      <div>
+        <label for="f-L">Длина, мм</label>
+        <input type="text" id="f-L" placeholder="80" inputmode="decimal" autocomplete="off">
+      </div>
+      <button class="btn" id="f-clear">Очистить</button>
+    </div>
+    <div id="f-explain" hidden></div>
+    <div id="f-count"></div>
+    <div id="f-list"></div>
+  </div>
+
+  <div class="block">
+    <div class="bt">Или загрузить файл — распознаю каждую строку</div>
+    <label class="drop" id="drop">
+      <input type="file" id="file" accept=".xlsx,.xls,.csv">
+      <strong>Выбрать файл</strong>
+      <span>xlsx, xls или csv — можно перетащить сюда</span>
+    </label>
+    <div id="file-error" hidden></div>
+    <div id="file-result" hidden>
+      <div id="file-summary"></div>
+      <div id="file-list"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script type="module" src="js/simple.js"></script>
